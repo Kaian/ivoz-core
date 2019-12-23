@@ -1,0 +1,21 @@
+on: [push, pull_request]
+name: Tests
+jobs:
+  build:
+    name: PHP Composer
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: PHPStan
+      uses: docker://oskarstark/phpstan-ga
+      with:
+        args: analyse src/ --level=3
